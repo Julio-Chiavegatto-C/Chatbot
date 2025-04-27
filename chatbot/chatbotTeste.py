@@ -1,9 +1,9 @@
-# Imports principais
 from chatterbot import ChatBot
+
 from chatterbot.trainers import ListTrainer
+
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
 import torch
-
 
 chatbot = ChatBot(
     'FamilIA',
@@ -29,10 +29,11 @@ conversation = [
 trainer = ListTrainer(chatbot)
 trainer.train(conversation)
 
-# Carregando modelo da Hugging Face 
+# modelo da Hugging Face
 model_name = "distilbert-base-uncased"  
 tokenizer = AutoTokenizer.from_pretrained(model_name)
 model = AutoModelForSequenceClassification.from_pretrained(model_name)
+
 
 def detectar_intencao(frase):
     inputs = tokenizer(frase, return_tensors="pt")
@@ -42,7 +43,7 @@ def detectar_intencao(frase):
     
     return predicted_class
 
-# Mapeamento das solicitações
+# interacoes
 intencoes = {
     0: "Agendar consulta",
     1: "Cancelar consulta",
@@ -56,6 +57,7 @@ while True:
     try:
         user_input = input()
 
+        
         intencao_detectada = detectar_intencao(user_input)
         descricao_intencao = intencoes.get(intencao_detectada, "Intenção desconhecida")
 
@@ -68,7 +70,6 @@ while True:
         elif descricao_intencao == "Remarcar consulta":
             print("Claro! Vamos remarcar. Me informe a nova data e horário.")
         else:
-            
             bot_input = chatbot.get_response(user_input)
             print(bot_input)
 
