@@ -51,7 +51,11 @@ intencoes = {
     3: "Dúvida geral"
 }
 
-print("FamilIA iniciada. Digite sua mensagem:")
+print("FamilIA: Olá! Como posso ajudar hoje?")
+for key, value in intencoes.items():
+    print(f"{key}: {value}")
+print("\nDigite sua mensagem:")
+
 
 while True:
     try:
