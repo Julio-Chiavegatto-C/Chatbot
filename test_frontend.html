@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chatbot FamilIA</title>
+    <style>
+        #chat { border: 1px solid #ccc; padding: 10px; height: 300px; overflow-y: auto; }
+        .user { color: blue; }
+        .bot { color: green; }
+        .intent { font-size: 0.8em; color: gray; margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Chatbot FamilIA</h1>
+    <div id="chat"></div>
+    <input type="text" id="message" placeholder="Digite sua mensagem...">
+    <button onclick="sendMessage()">Enviar</button>
+
+    <script>
+        async function sendMessage() {
+            const input = document.getElementById('message');
+            const message = input.value.trim();
+            if (!message) return;
+            input.value = '';
+
+            const chat = document.getElementById('chat');
+
+            chat.innerHTML += `<p class="user"><strong>Você:</strong> ${message}</p>`;
+
+            const response = await fetch('http://localhost:5000/api/detect_intent', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message })
+            });
+
+            const data = await response.json();
+
+            chat.innerHTML += `
+                <p class="bot"><strong>Bot:</strong> ${data.response}</p>
+                <p class="intent">Intenção detectada: ${data.intent}</p>
+            `;
+
+            chat.scrollTop = chat.scrollHeight;
+        }
+
+        document.getElementById('message').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendMessage();
+        });
+    </script>
+</body>
+</html>
